@@ -68,7 +68,7 @@ prompt() {
     local status="$?"
     local directory="\[\e[1;34m\]\w\[\e[0m\]"
     local git="$(__git_ps1 ' \[\e[1;36m\] %s\[\e[0m\]')"
-    if [ -n "$GUIX_ENVIRONMENT" ]; then
+    if [ -n "$IN_NIX_SHELL" ]; then
         local env=" [env]"
     fi
     if [ "$status" = "0" ]; then
