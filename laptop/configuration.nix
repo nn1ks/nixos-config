@@ -52,6 +52,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    media-session.config.bluez-monitor = pkgs.lib.importJSON ../data/bluez-monitor.conf.json;
   };
 
   users.groups = {
