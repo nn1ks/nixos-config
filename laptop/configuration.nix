@@ -81,7 +81,11 @@ ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="amdgpu_bl0",RUN+="${pkgs.coreuti
   virtualisation.libvirtd.enable = true;
 
   # List packages installed in system profile.
-  environment.systemPackages = with pkgs; [];
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.clipboard-indicator
+    gnomeExtensions.just-perfection
+    gnomeExtensions.gsconnect
+  ];
 
   fonts.fonts = with pkgs; [
     iosevka

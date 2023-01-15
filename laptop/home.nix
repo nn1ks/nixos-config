@@ -25,10 +25,6 @@
       youtube-dl
       zip
       unzip
-      # Gnome extensions
-      gnomeExtensions.clipboard-indicator
-      gnomeExtensions.just-perfection
-      gnomeExtensions.gsconnect
       # Other
       gnome.gnome-tweaks
       gnome.gnome-boxes
