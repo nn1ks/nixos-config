@@ -50,6 +50,8 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  services.auto-cpufreq.enable = true;
+
   # Use pipewire for sound.
   security.rtkit.enable = true;
   hardware.pulseaudio.enable = false;
