@@ -2,28 +2,10 @@
 
 {
   imports = [
+    ../base/configuration.nix
     ./hardware-configuration.nix
     ../modules/nixos/logiops.nix
   ];
-
-  nix = {
-    settings = {
-      substituters = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-      ];
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      ];
-    };
-    extraOptions = "experimental-features = nix-command flakes";
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   # Automatically update microcode
   hardware.cpu.amd.updateMicrocode = true;
@@ -37,17 +19,13 @@
     memoryMax = 32000000000; # 32GB
   };
 
-  hardware.opengl.extraPackages = [ pkgs.rocm-opencl-icd pkgs.amdvlk ];
+  hardware.opengl = {
+    extraPackages = [ pkgs.rocm-opencl-icd pkgs.amdvlk ];
+    driSupport32Bit = true;
+  };
 
   networking.hostName = "t14-nixos";
   networking.networkmanager.enable = true;
-
-  time.timeZone = "Europe/Berlin";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  console.keyMap = "de";
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -62,6 +40,21 @@
   services.printing.enable = true;
 
   services.auto-cpufreq.enable = true;
+
+  services.btrbk.instances.main.settings = {
+    volume = {
+      "/" = {
+        subvolume."@home" = {
+          snapshot_dir = ".btrbk-snapshots";
+          target = "/run/media/niklas/cfcdd493-3fed-47d3-aeb7-a83ec80e7c89/t14-nixos-backup";
+          snapshot_preserve_min = "1w";
+          snapshot_preserve = "7d 2w";
+          target_preserve_min = "1w";
+          target_preserve = "20d 10w 10m *y";
+        };
+      };
+    };
+  };
 
   services.logiops = {
     enable = true;
@@ -108,22 +101,9 @@ ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="amdgpu_bl0",RUN+="${pkgs.coreuti
   fonts.fonts = with pkgs; [
     iosevka
     source-han-sans
+    source-serif-pro
     noto-fonts
     noto-fonts-emoji
     roboto
   ];
-
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.11"; # Did you read the comment?
 }
-
