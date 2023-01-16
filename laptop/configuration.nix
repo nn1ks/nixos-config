@@ -1,7 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ../modules/nixos/logiops.nix
+  ];
 
   nix = {
     settings = {
@@ -51,6 +54,11 @@
   services.printing.enable = true;
 
   services.auto-cpufreq.enable = true;
+
+  services.logiops = {
+    enable = true;
+    extraConfig = builtins.readFile ../data/logid.cfg;
+  };
 
   # Use pipewire for sound.
   security.rtkit.enable = true;
