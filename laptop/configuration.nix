@@ -25,6 +25,12 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Automatically update microcode
+  hardware.cpu.amd.updateMicrocode = true;
+
+  # Firmware updates
+  services.fwupd.enable = true;
+
   # Use zram swap.
   zramSwap = {
     enable = true;
