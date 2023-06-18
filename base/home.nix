@@ -1,19 +1,16 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
-  home = {
-    stateVersion = "22.11";
-    packages = with pkgs; [
-      curl
-      wget
-      htop
-      btop
-      tree
-      ripgrep
-      fd
-      jq
-    ];
-  };
+  home.packages = with pkgs; [
+    curl
+    wget
+    htop
+    btop
+    tree
+    ripgrep
+    fd
+    jq
+  ];
 
   programs = {
     bash = {
@@ -27,6 +24,7 @@
       };
       sessionVariables = {
         PATH = "\"$HOME/.local/bin:$PATH\"";
+        LV2_PATH = "/etc/profiles/per-user/\"$USER\"/lib/lv2"; # LV2 audio plugins
       };
       bashrcExtra = ''source ~/.config/nixos/data/git-prompt.sh
 GIT_PS1_SHOWDIRTYSTATE=1
@@ -53,8 +51,6 @@ PROMPT_COMMAND=prompt'';
       enable = true;
       userName = "Niklas Sauter";
       userEmail = "niklas@n1ks.net";
-      # signing.key = "F4047D8CF4CCCBD7F04CAC4446D2BA9AB7079F73";
-      # signing.signByDefault = true;
       extraConfig = {
         core.ignorecase = false;
         pull.ff = "only";
@@ -76,7 +72,10 @@ PROMPT_COMMAND=prompt'';
 
     tmux = {
       enable = true;
-      extraConfig = ''set -g status-right ""
+      extraConfig = ''
+set -g escape-time 0
+
+set -g status-right ""
 
 # Toggle status bar
 bind-key t set-option -g status
@@ -91,6 +90,7 @@ set -g mouse on'';
 
     helix = {
       enable = true;
+      package = pkgs-unstable.helix;
       settings = {
         theme = "autumn_night";
         editor = {
