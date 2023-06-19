@@ -17,8 +17,6 @@ let
   lemmy_port = 8536;
   lemmy_ui_port = 8501;
 
-  matrix-conduit = pkgs.callPackage ../modules/packages/matrix-conduit.nix {};
-
   maubot = mach-lib.buildPythonPackage rec {
     pname = "maubot";
     version = "0.3.1";
@@ -184,7 +182,6 @@ in {
 
     matrix-conduit = {
       enable = true;
-      package = matrix-conduit;
       settings.global = {
         address = "127.0.0.1";
         port = matrix_conduit_port;
