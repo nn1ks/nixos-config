@@ -248,6 +248,7 @@ in {
           };
           history_sync.double_puppet_backfill = true;
           bridge_matrix_leave = false;
+          enable_status_broadcast = false;
         };
         logging.writers = [
           { type = "journald"; }
