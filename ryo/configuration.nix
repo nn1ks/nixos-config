@@ -9,6 +9,8 @@
   # Automatically update microcode
   hardware.cpu.amd.updateMicrocode = true;
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # Use zram swap.
   zramSwap = {
     enable = true;
