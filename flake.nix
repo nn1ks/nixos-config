@@ -57,8 +57,10 @@
         };
 
         # Server
-        sakura = lib.nixosSystem {
+        # TODO: Use `lib.nixosSystem` (without `nixpkgs-unstable`) once the updated lemmy service is available in the stable version
+        sakura = nixpkgs-unstable.lib.nixosSystem {
           inherit system;
+          specialArgs = { inherit pkgs-unstable; };
           modules = [
             ./sakura/configuration.nix
             home-manager.nixosModules.home-manager {
