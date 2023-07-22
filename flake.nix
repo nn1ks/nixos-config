@@ -64,6 +64,7 @@
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit pkgs-unstable; };
               home-manager.users.niklas = {
                 imports = [ ./sakura/home.nix ];
               };
