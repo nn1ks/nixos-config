@@ -45,6 +45,8 @@
     jack.enable = true;
   };
 
+  boot.initrd.kernelModules = [ "i2c-dev" ];
+
   users.groups = {
     "i2c" = {}; # For controlling external monitors.
   };
@@ -62,6 +64,7 @@
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.just-perfection
     gnomeExtensions.gsconnect
+    gnomeExtensions.adjust-display-brightness
   ];
 
   fonts.fonts = with pkgs; [
