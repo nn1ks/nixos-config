@@ -6,6 +6,10 @@
     ../base/desktop-configuration.nix
   ];
 
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   # Automatically update microcode
   hardware.cpu.amd.updateMicrocode = true;
 

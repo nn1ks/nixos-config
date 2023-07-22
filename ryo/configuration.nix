@@ -6,10 +6,14 @@
     ../base/desktop-configuration.nix
   ];
 
-  # Automatically update microcode
-  hardware.cpu.amd.updateMicrocode = true;
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  # Automatically update microcode
+  hardware.cpu.amd.updateMicrocode = true;
 
   # Use zram swap.
   zramSwap = {
