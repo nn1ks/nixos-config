@@ -3,14 +3,12 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../base/desktop-configuration.nix
+    ../../base/desktop-configuration.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Automatically update microcode
   hardware.cpu.amd.updateMicrocode = true;
@@ -26,8 +24,25 @@
     driSupport32Bit = true;
   };
 
-  networking.hostName = "ryo";
+  networking.hostName = "aiko";
   networking.networkmanager.enable = true;
+
+  services.btrbk.instances.btrbk.settings = {
+    volume = {
+      "/" = {
+        subvolume."home" = {
+          snapshot_dir = ".btrbk-snapshots";
+          target = "/run/media/niklas/backup";
+          snapshot_preserve_min = "1w";
+          snapshot_preserve = "7d 2w";
+          target_preserve_min = "1w";
+          target_preserve = "20d 10w 10m *y";
+        };
+      };
+    };
+  };
+
+  services.fprintd.enable = true;
 
   services.udev = {
     enable = true;

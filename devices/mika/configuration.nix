@@ -19,9 +19,9 @@ let
 in {
   imports = [
     ./hardware-configuration.nix
-    ../base/configuration.nix
-    ../modules/services/maubot.nix
-    ../modules/services/mautrix-whatsapp.nix
+    ../../base/configuration.nix
+    ../../modules/services/maubot.nix
+    ../../modules/services/mautrix-whatsapp.nix
   ];
 
   nixpkgs.config.permittedInsecurePackages = [ "nodejs-14.21.3" "openssl-1.1.1u" ];
@@ -37,7 +37,7 @@ in {
     memoryMax = 2000000000; # 2GB
   };
 
-  networking.hostName = "sakura";
+  networking.hostName = "mika";
 
   # Open firewall ports for HTTP (80), HTTPS (443), TURN (3478, 5349, 49152-65535), and Matrix federation (8448)
   networking.firewall.allowedTCPPorts = [ 80 443 3478 5349 8448 ];
@@ -46,13 +46,13 @@ in {
   networking.firewall.allowedUDPPortRanges = [ { from = 49152; to = 65535; } ];
 
   users.users.root = {
-    openssh.authorizedKeys.keyFiles = [ ../data/ssh-key-kita.pub ../data/ssh-key-ryo.pub ];
+    openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
   };
 
   users.users.niklas = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keyFiles = [ ../data/ssh-key-kita.pub ../data/ssh-key-ryo.pub ];
+    openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
   };
 
   services = {
@@ -103,7 +103,7 @@ in {
     vaultwarden = {
       enable = true;
       config = {
-        ADMIN_TOKEN = builtins.readFile ../secrets/vaultwarden-admin-token.txt;
+        ADMIN_TOKEN = builtins.readFile ../../secrets/vaultwarden-admin-token.txt;
         SIGNUPS_ALLOWED = false;
         SHOW_PASSWORD_HINT = false;
         ROCKET_ADDRESS = "127.0.0.1";
@@ -126,7 +126,7 @@ in {
           bind_address = "127.0.0.1";
           port = searx_port;
           base_url = "https://${searx_domain}";
-          secret_key = builtins.readFile ../secrets/searx-secret-key.txt;
+          secret_key = builtins.readFile ../../secrets/searx-secret-key.txt;
           image_proxy = false;
           method = "GET";
         };
@@ -158,24 +158,24 @@ in {
         server_name = "n1ks.net";
         allow_registration = false;
         turn_uris = [ "turn:turn.n1ks.net?transport=udp" "turn:turn.n1ks.net?transport=tcp" ];
-        turn_secret = builtins.readFile ../secrets/coturn-auth-secret.txt;
+        turn_secret = builtins.readFile ../../secrets/coturn-auth-secret.txt;
       };
     };
 
     coturn = {
       enable = true;
-      static-auth-secret = builtins.readFile ../secrets/coturn-auth-secret.txt;
+      static-auth-secret = builtins.readFile ../../secrets/coturn-auth-secret.txt;
     };
 
     maubot = {
       enable = true;
-      package = pkgs.callPackage ../modules/packages/maubot.nix {};
+      package = pkgs.callPackage ../../modules/packages/maubot.nix {};
       settings = {
         server = {
           hostname = "127.0.0.1";
           port = maubot_port;
           public_url = "https://matrix.n1ks.net";
-          unshared_secret = builtins.readFile ../secrets/maubot-unshared-secret.txt;
+          unshared_secret = builtins.readFile ../../secrets/maubot-unshared-secret.txt;
         };
         admins.niklas = "$2b$12$OwYR5D565gLwDpeLVg6azOajf3.JS28rvb7WTL/baKDksVJkT/nxq";
         homeservers = {
@@ -195,8 +195,8 @@ in {
           address = "http://127.0.0.1:${builtins.toString mautrix_whatsapp_port}";
           hostname = "127.0.0.1";
           port = mautrix_whatsapp_port;
-          as_token = builtins.readFile ../secrets/mautrix-whatsapp-as-token.txt;
-          hs_token = builtins.readFile ../secrets/mautrix-whatsapp-hs-token.txt;
+          as_token = builtins.readFile ../../secrets/mautrix-whatsapp-as-token.txt;
+          hs_token = builtins.readFile ../../secrets/mautrix-whatsapp-hs-token.txt;
           database = {
             type = "sqlite3-fk-wal";
             uri = "file:///var/lib/mautrix-whatsapp/sqlite3-database?_txlock=immediate";
@@ -233,7 +233,7 @@ in {
         port = lemmy_port;
         setup = {
           admin_username = "admin";
-          admin_password = builtins.readFile ../secrets/lemmy-admin-password.txt;
+          admin_password = builtins.readFile ../../secrets/lemmy-admin-password.txt;
           site_name = "My Lemmy Instance";
         };
       };

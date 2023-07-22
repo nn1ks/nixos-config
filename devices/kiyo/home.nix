@@ -1,7 +1,7 @@
 { config, pkgs, pkgs-unstable, ... }:
 
 {
-  imports = [ ../base/desktop-home.nix ];
+  imports = [ ../../base/desktop-home.nix ];
 
   home = {
     stateVersion = "22.11";

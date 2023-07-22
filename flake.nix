@@ -24,51 +24,51 @@
     in {
       nixosConfigurations = {
         # Desktop
-        ryo = lib.nixosSystem {
+        kiyo = lib.nixosSystem {
           inherit system;
           modules = [
-            ./ryo/configuration.nix
+            ./devices/kiyo/configuration.nix
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit pkgs-unstable; };
               home-manager.users.niklas = {
-                imports = [ ./ryo/home.nix ];
+                imports = [ ./devices/kiyo/home.nix ];
               };
             }
           ];
         };
 
         # Laptop
-        kita = lib.nixosSystem {
+        aiko = lib.nixosSystem {
           inherit system;
           modules = [
-            ./kita/configuration.nix
+            ./devices/aiko/configuration.nix
             nixos-hardware.nixosModules.lenovo-thinkpad-t14
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit pkgs-unstable; };
               home-manager.users.niklas = {
-                imports = [ ./kita/home.nix ];
+                imports = [ ./devices/aiko/home.nix ];
               };
             }
           ];
         };
 
-        # Server
+        # VPS
         # TODO: Use `lib.nixosSystem` (without `nixpkgs-unstable`) once the updated lemmy service is available in the stable version
-        sakura = nixpkgs-unstable.lib.nixosSystem {
+        mika = nixpkgs-unstable.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit pkgs-unstable; };
           modules = [
-            ./sakura/configuration.nix
+            ./devices/mika/configuration.nix
             home-manager.nixosModules.home-manager {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit pkgs-unstable; };
               home-manager.users.niklas = {
-                imports = [ ./sakura/home.nix ];
+                imports = [ ./devices/mika/home.nix ];
               };
             }
           ];
