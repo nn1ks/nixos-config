@@ -70,7 +70,7 @@ in {
   users.users.niklas = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keyFiles = [ ../data/ssh_key_kita.pub ../data/ssh_key_ryo.pub ];
+    openssh.authorizedKeys.keyFiles = [ ../data/ssh-key-kita.pub ../data/ssh-key-ryo.pub ];
   };
 
   # Fix lemmy service
