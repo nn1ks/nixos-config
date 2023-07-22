@@ -55,18 +55,6 @@ in {
     openssh.authorizedKeys.keyFiles = [ ../data/ssh-key-kita.pub ../data/ssh-key-ryo.pub ];
   };
 
-  # Fix lemmy service
-  systemd.services.lemmy.environment.LEMMY_DATABASE_URL = pkgs.lib.mkForce "postgres:///lemmy?host=/run/postgresql&user=lemmy";
-  nixpkgs.overlays = [(self: super: {
-    lemmy-server = pkgs-unstable.lemmy-server.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [(super.fetchpatch {
-        name = "fix-db-migrations.patch";
-        url = "https://gist.githubusercontent.com/matejc/9be474fa581c1a29592877ede461f1f2/raw/83886917153fcba127b43d9a94a49b3d90e635b3/fix-db-migrations.patch";
-        hash = "sha256-BvoA4K9v84n60lG96j1+91e8/ERn9WlVTGk4Z6Fj4iA=";
-      })];
-    });
-  })];
-
   services = {
     openssh = {
       enable = true;
@@ -243,7 +231,6 @@ in {
       settings = {
         hostname = "lemmy.n1ks.net";
         port = lemmy_port;
-        federation.enabled = true;
         setup = {
           admin_username = "admin";
           admin_password = builtins.readFile ../secrets/lemmy-admin-password.txt;
