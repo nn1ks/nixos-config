@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, mach-lib, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 let
   prometheus_port = 8000;
@@ -16,24 +16,6 @@ let
   mautrix_whatsapp_port = 8600;
   lemmy_port = 8536;
   lemmy_ui_port = 8501;
-
-  maubot = mach-lib.buildPythonPackage rec {
-    pname = "maubot";
-    version = "0.3.1";
-    src = pkgs.python39.pkgs.fetchPypi {
-      inherit pname version;
-      sha256 = "sha256-8gJtHwQOR1BqLbWWSFcr3cXDbIvDZwG0MSsoCz/LrnU=";
-    };
-    patches = [
-      # add entry point
-      (pkgs.fetchpatch {
-        url = "https://patch-diff.githubusercontent.com/raw/maubot/maubot/pull/146.patch";
-        sha256 = "0yn5357z346qzy5v5g124mgiah1xsi9yyfq42zg028c8paiw8s8x";
-      })
-    ];
-    doCheck = false;
-    propagatedBuildInputs = [ pkgs.python39.pkgs.setuptools ];
-  };
 in {
   imports = [
     ./hardware-configuration.nix
@@ -199,7 +181,7 @@ in {
 
     maubot = {
       enable = true;
-      package = maubot;
+      package = pkgs.callPackage ../modules/packages/maubot.nix {};
       settings = {
         server = {
           hostname = "127.0.0.1";
