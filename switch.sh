@@ -13,3 +13,4 @@ sudo nixos-rebuild switch --flake .
 
 # Remove the copied lock file
 rm flake.lock
+git rm --cached flake.lock
