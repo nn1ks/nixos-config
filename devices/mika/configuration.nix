@@ -55,6 +55,16 @@ in {
     openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
   };
 
+  age.secrets = {
+    lemmy-admin-password.file = ../../secrets/lemmy-admin-password.age;
+    vaultwarden-admin-token.file = ../../secrets/vaultwarden-admin-token.age;
+    searx-secret-key.file = ../../secrets/searx-secret-key.age;
+    coturn-auth-secret.file = ../../secrets/coturn-auth-secret.age;
+    maubot-unshared-secret.file = ../../secrets/maubot-unshared-secret.age;
+    mautrix-whatsapp-as-token.file = ../../secrets/mautrix-whatsapp-as-token.age;
+    mautrix-whatsapp-hs-token.file = ../../secrets/mautrix-whatsapp-hs-token.age;
+  };
+
   services = {
     openssh = {
       enable = true;
@@ -103,7 +113,7 @@ in {
     vaultwarden = {
       enable = true;
       config = {
-        ADMIN_TOKEN = builtins.readFile ../../secrets/vaultwarden-admin-token.txt;
+        ADMIN_TOKEN = builtins.readFile config.age.secrets.vaultwarden-admin-token.path;
         SIGNUPS_ALLOWED = false;
         SHOW_PASSWORD_HINT = false;
         ROCKET_ADDRESS = "127.0.0.1";
@@ -126,7 +136,7 @@ in {
           bind_address = "127.0.0.1";
           port = searx_port;
           base_url = "https://${searx_domain}";
-          secret_key = builtins.readFile ../../secrets/searx-secret-key.txt;
+          secret_key = builtins.readFile config.age.secrets.searx-secret-key.path;
           image_proxy = false;
           method = "GET";
         };
@@ -158,13 +168,13 @@ in {
         server_name = "n1ks.net";
         allow_registration = false;
         turn_uris = [ "turn:turn.n1ks.net?transport=udp" "turn:turn.n1ks.net?transport=tcp" ];
-        turn_secret = builtins.readFile ../../secrets/coturn-auth-secret.txt;
+        turn_secret = builtins.readFile config.age.secrets.coturn-auth-secret.path;
       };
     };
 
     coturn = {
       enable = true;
-      static-auth-secret = builtins.readFile ../../secrets/coturn-auth-secret.txt;
+      static-auth-secret = builtins.readFile config.age.secrets.coturn-auth-secret.path;
     };
 
     maubot = {
@@ -175,7 +185,7 @@ in {
           hostname = "127.0.0.1";
           port = maubot_port;
           public_url = "https://matrix.n1ks.net";
-          unshared_secret = builtins.readFile ../../secrets/maubot-unshared-secret.txt;
+          unshared_secret = builtins.readFile config.age.secrets.maubot-unshared-secret.path;
         };
         admins.niklas = "$2b$12$OwYR5D565gLwDpeLVg6azOajf3.JS28rvb7WTL/baKDksVJkT/nxq";
         homeservers = {
@@ -195,8 +205,8 @@ in {
           address = "http://127.0.0.1:${builtins.toString mautrix_whatsapp_port}";
           hostname = "127.0.0.1";
           port = mautrix_whatsapp_port;
-          as_token = builtins.readFile ../../secrets/mautrix-whatsapp-as-token.txt;
-          hs_token = builtins.readFile ../../secrets/mautrix-whatsapp-hs-token.txt;
+          as_token = builtins.readFile config.age.secrets.mautrix-whatsapp-as-token.path;
+          hs_token = builtins.readFile config.age.secrets.mautrix-whatsapp-hs-token.path;
           database = {
             type = "sqlite3-fk-wal";
             uri = "file:///var/lib/mautrix-whatsapp/sqlite3-database?_txlock=immediate";
@@ -233,7 +243,7 @@ in {
         port = lemmy_port;
         setup = {
           admin_username = "admin";
-          admin_password = builtins.readFile ../../secrets/lemmy-admin-password.txt;
+          admin_password = builtins.readFile config.age.secrets.lemmy-admin-password.path;
           site_name = "My Lemmy Instance";
         };
       };

@@ -7,9 +7,10 @@
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix.url = "github:ryantm/agenix";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager, agenix }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -21,6 +22,7 @@
         config.allowUnfree = true;
       };
       lib = nixpkgs.lib;
+      agenix-package = agenix.packages."${system}".default;
     in {
       nixosConfigurations = {
         # Desktop
@@ -36,6 +38,8 @@
                 imports = [ ./devices/kiyo/home.nix ];
               };
             }
+            agenix.nixosModules.default
+            { environment.systemPackages = [ agenix.packages."${system}".default ]; }
           ];
         };
 
@@ -53,6 +57,8 @@
                 imports = [ ./devices/aiko/home.nix ];
               };
             }
+            agenix.nixosModules.default
+            { environment.systemPackages = [ agenix.packages."${system}".default ]; }
           ];
         };
 
@@ -71,6 +77,8 @@
                 imports = [ ./devices/mika/home.nix ];
               };
             }
+            agenix.nixosModules.default
+            { environment.systemPackages = [ agenix.packages."${system}".default ]; }
           ];
         };
       };
