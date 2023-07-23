@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -f flake.nix ]; then
+if [ -e flake.lock ]; then
   echo "The file flake.lock already exists" >&2
   exit 1
 fi
