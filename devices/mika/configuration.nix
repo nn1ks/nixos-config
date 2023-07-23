@@ -77,6 +77,8 @@ in {
       settings.PermitRootLogin = "prohibit-password";
     };
 
+    tailscale.enable = true;
+
     prometheus = {
       enable = true;
       port = prometheus_port;
