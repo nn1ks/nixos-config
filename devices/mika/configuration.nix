@@ -55,6 +55,7 @@ in {
     openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
   };
 
+  age.identityPaths = [ "/home/niklas/.ssh/id_ed25519" ];
   age.secrets = {
     lemmy-admin-password.file = ../../secrets/lemmy-admin-password.age;
     vaultwarden-admin-token.file = ../../secrets/vaultwarden-admin-token.age;
