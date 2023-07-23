@@ -16,6 +16,12 @@ let
   mautrix_whatsapp_port = 8600;
   lemmy_port = 8536;
   lemmy_ui_port = 8501;
+
+  ssh_keys = [
+    ../../data/ssh-key-aiko.pub
+    ../../data/ssh-key-kiyo.pub
+    ../../data/ssh-key-yuto.pub
+  ];
 in {
   imports = [
     ./hardware-configuration.nix
@@ -44,13 +50,13 @@ in {
   networking.firewall.allowedUDPPortRanges = [ { from = 49152; to = 65535; } ];
 
   users.users.root = {
-    openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
+    openssh.authorizedKeys.keyFiles = ssh_keys;
   };
 
   users.users.niklas = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keyFiles = [ ../../data/ssh-key-aiko.pub ../../data/ssh-key-kiyo.pub ];
+    openssh.authorizedKeys.keyFiles = ssh_keys;
   };
 
   age.identityPaths = [ "/home/niklas/.ssh/id_ed25519" ];
