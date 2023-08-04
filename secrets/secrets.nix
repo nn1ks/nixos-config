@@ -8,7 +8,8 @@ in {
   "vaultwarden-admin-token.age".publicKeys = [ mika ];
   "searx-secret-key.age".publicKeys = [ mika ];
   "coturn-auth-secret.age".publicKeys = [ mika ];
-  "maubot-unshared-secret.age".publicKeys = [ mika ];
   "mautrix-whatsapp-as-token.age".publicKeys = [ mika ];
   "mautrix-whatsapp-hs-token.age".publicKeys = [ mika ];
+  "grafana-smtp-user.age".publicKeys = [ mika ];
+  "grafana-smtp-password.age".publicKeys = [ mika ];
 }

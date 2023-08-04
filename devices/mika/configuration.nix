@@ -1,10 +1,12 @@
 { config, pkgs, pkgs-unstable, ... }:
 
 let
+  hostname = "mika";
+  tailscale_name = "${hostname}-t";
+
   prometheus_port = 8000;
   prometheus_node_port = 8001;
   grafana_port = 8100;
-  grafana_domain = "grafana.n1ks.net";
   vaultwarden_port = 8200;
   vaultwarden_websocket_port = 8201;
   vaultwarden_domain = "vault.n1ks.net";
@@ -12,7 +14,6 @@ let
   searx_domain = "searx.n1ks.net";
   matrix_conduit_port = 8400;
   matrix_conduit_domain = "matrix.n1ks.net";
-  maubot_port = 8410;
   mautrix_whatsapp_port = 8600;
   lemmy_port = 8536;
   lemmy_ui_port = 8501;
@@ -26,7 +27,6 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../../base/configuration.nix
-    ../../modules/services/maubot.nix
     ../../modules/services/mautrix-whatsapp.nix
   ];
 
@@ -41,7 +41,7 @@ in {
     memoryMax = 2000000000; # 2GB
   };
 
-  networking.hostName = "mika";
+  networking.hostName = hostname;
 
   # Open firewall ports for HTTP (80), HTTPS (443), TURN (3478, 5349, 49152-65535), and Matrix federation (8448)
   networking.firewall.allowedTCPPorts = [ 80 443 3478 5349 8448 ];
@@ -65,9 +65,10 @@ in {
     vaultwarden-admin-token.file = ../../secrets/vaultwarden-admin-token.age;
     searx-secret-key.file = ../../secrets/searx-secret-key.age;
     coturn-auth-secret.file = ../../secrets/coturn-auth-secret.age;
-    maubot-unshared-secret.file = ../../secrets/maubot-unshared-secret.age;
     mautrix-whatsapp-as-token.file = ../../secrets/mautrix-whatsapp-as-token.age;
     mautrix-whatsapp-hs-token.file = ../../secrets/mautrix-whatsapp-hs-token.age;
+    grafana-smtp-user.file = ../../secrets/grafana-smtp-user.age;
+    grafana-smtp-password.file = ../../secrets/grafana-smtp-password.age;
   };
 
   services = {
@@ -112,8 +113,14 @@ in {
       settings.server = {
         http_addr = "127.0.0.1";
         http_port = grafana_port;
-        domain = "${grafana_domain}";
-        root_url = "https://${grafana_domain}";
+        root_url = "http://${tailscale_name}/grafana";
+      };
+      settings.smtp = {
+        enabled = true;
+        user = "niklas.sauter@posteo.net";
+        password = "\"\"\"yq42&mutIO;po\"\"\"";
+        from_address = "grafana@n1ks.net";
+        host = "posteo.de:587";
       };
     };
 
@@ -182,23 +189,6 @@ in {
     coturn = {
       enable = true;
       static-auth-secret = builtins.readFile config.age.secrets.coturn-auth-secret.path;
-    };
-
-    maubot = {
-      enable = true;
-      package = pkgs.callPackage ../../modules/packages/maubot.nix {};
-      settings = {
-        server = {
-          hostname = "127.0.0.1";
-          port = maubot_port;
-          public_url = "https://matrix.n1ks.net";
-          unshared_secret = builtins.readFile config.age.secrets.maubot-unshared-secret.path;
-        };
-        admins.niklas = "$2b$12$OwYR5D565gLwDpeLVg6azOajf3.JS28rvb7WTL/baKDksVJkT/nxq";
-        homeservers = {
-          "n1ks.net".url = "https://${matrix_conduit_domain}";
-        };
-      };
     };
 
     mautrix-whatsapp = {
@@ -270,25 +260,28 @@ in {
           respond /.well-known/matrix/client `{"m.homeserver":{"base_url":"https://${matrix_conduit_domain}"}}`
         '';
 
-        "${grafana_domain}".extraConfig = ''
-          reverse_proxy http://127.0.0.1:${builtins.toString grafana_port}
-        '';
         "${vaultwarden_domain}".extraConfig = ''
           reverse_proxy /notifications/hub http://127.0.0.1:${builtins.toString vaultwarden_websocket_port}
           reverse_proxy http://127.0.0.1:${builtins.toString vaultwarden_port} {
             header_up X-Real-IP {remote_host}
           }
         '';
+
         "${searx_domain}".extraConfig = ''
           reverse_proxy http://127.0.0.1:${builtins.toString searx_port}
         '';
 
         "${matrix_conduit_domain}".extraConfig = ''
-          reverse_proxy /_matrix/maubot* http://127.0.0.1:${builtins.toString maubot_port}
           reverse_proxy http://127.0.0.1:${builtins.toString matrix_conduit_port}
         '';
         "${matrix_conduit_domain}:8448".extraConfig = ''
           reverse_proxy http://127.0.0.1:${builtins.toString matrix_conduit_port}
+        '';
+
+        "http://mika-t".extraConfig = ''
+          handle_path /grafana/* {
+            reverse_proxy http://127.0.0.1:${builtins.toString grafana_port}
+          }
         '';
       };
     };
