@@ -62,6 +62,25 @@
           ];
         };
 
+        # Homeserver
+        sora = lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit pkgs-unstable; };
+          modules = [
+            ./devices/sora/configuration.nix
+            home-manager.nixosModules.home-manager {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit pkgs-unstable; };
+              home-manager.users.niklas = {
+                imports = [ ./devices/sora/home.nix ];
+              };
+            }
+            agenix.nixosModules.default
+            { environment.systemPackages = [ agenix.packages."${system}".default ]; }
+          ];
+        };
+
         # VPS
         # TODO: Use `lib.nixosSystem` (without `nixpkgs-unstable`) once the updated lemmy service is available in the stable version
         mika = nixpkgs-unstable.lib.nixosSystem {
