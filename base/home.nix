@@ -42,7 +42,10 @@ prompt() {
     else
         local indicator=" \[\e[1;31m\]$\[\e[0m\]"
     fi
-    PS1="''${directory}''${git}''${env}''${indicator} "
+    if [ "$SSH_CONNECTION" ]; then
+      local hostname="\[\e[1;35m\][\h]\[\e[0m\] "
+    fi
+    PS1="''${hostname}''${directory}''${git}''${env}''${indicator} "
 }
 PROMPT_COMMAND=prompt'';
     };
