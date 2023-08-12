@@ -30,6 +30,8 @@ in {
     ../../modules/services/mautrix-whatsapp.nix
   ];
 
+  system.stateVersion = "22.11";
+
   boot.loader.grub = {
     enable = true;
     devices = [ "/dev/sda" ];
