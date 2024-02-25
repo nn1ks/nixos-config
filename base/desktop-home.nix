@@ -4,12 +4,13 @@
   imports = [ ./home.nix ];
 
   home.packages = with pkgs; [
-    # Development
     gcc
     ccls
     python3
-
-    # Other
+    direnv
+    nix-direnv
+    nil
+    vscodium
     pwgen
     translate-shell
     trash-cli
@@ -19,9 +20,9 @@
     gnome.gnome-tweaks
     gnome.gnome-boxes
     pkgs-unstable.blackbox-terminal
-    pkgs-unstable.fractal-next
     fragments
     spotify
+    pkgs-unstable.youtube-music
     discord
     steam
     fragments
@@ -44,6 +45,7 @@
     tor-browser-bundle-bin
     tiled
     libresprite
+    pika-backup
   ];
 
   programs.firefox.enable = true;

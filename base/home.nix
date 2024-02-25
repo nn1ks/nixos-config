@@ -6,6 +6,7 @@
     wget
     htop
     btop
+    killall
     tree
     ripgrep
     fd
