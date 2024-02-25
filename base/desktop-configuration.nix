@@ -67,14 +67,12 @@
     gnomeExtensions.adjust-display-brightness
   ];
 
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     iosevka
-    source-han-sans
-    source-serif-pro
     noto-fonts
+    noto-fonts-cjk-sans
     noto-fonts-emoji
     roboto
-    babelstone-han
   ];
 }
 
